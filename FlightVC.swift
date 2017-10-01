@@ -21,24 +21,22 @@ class FlightVC: UIViewController, UITableViewDelegate {
     fileprivate var viewModelFlight = FlightViewModel()
     
     fileprivate var disposeBag = DisposeBag()
+    fileprivate var expandedRow:Int = 11
     
     override func viewDidLoad() {
         super.viewDidLoad()
         viewModelFlight.typeScene = scene
         setUpTableview()
-        
     }
     
     private func setUpTableview() {
         
         viewModelFlight.flights.bind(to: tableviewFlights.rx.items(cellIdentifier: FlightCell.identifier, cellType: FlightCell.self)){ (row,element,cell) in
-            
-            self.updateCell(cell: cell, row: row, flightModel: element)
-            
+               self.updateCell(cell: cell, row: row, flightModel: element)
             }.disposed(by: disposeBag)
         
         tableviewFlights.rx.modelSelected(Flight.self).subscribe(onNext:  { value in
-            print("value selected : \(value)")
+               print("value selected : \(value)")
         }).disposed(by: disposeBag)
         
         tableviewFlights.rowHeight = UITableViewAutomaticDimension
@@ -48,7 +46,6 @@ class FlightVC: UIViewController, UITableViewDelegate {
         
         // data initializer
         viewModelFlight.initializeFlightData()
-        
     }
     
 
@@ -77,14 +74,12 @@ class FlightVC: UIViewController, UITableViewDelegate {
 
 extension FlightVC {
     fileprivate func updateCell(cell:FlightCell , row:Int , flightModel:Flight) {
-        cell.lblOrigin.text = "Aybek Can Kaya"
-        if row == 14 {
+        if row == expandedRow {
             cell.updateUI(with: flightModel, state: .expanded)
         }
         else {
             cell.updateUI(with: flightModel, state: .collapsed)
         }
-        
     }
 }
 

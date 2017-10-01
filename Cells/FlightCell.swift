@@ -52,9 +52,10 @@ class FlightCell: UITableViewCell {
     func updateUI(with model:Flight , state:CellState) {
         currentState = state
         viewBottom.isHidden = state == CellState.collapsed
-        heightConstaintBottomView.constant = state == CellState.collapsed ? 0:123
+        heightConstaintBottomView.constant = state == CellState.collapsed ? 0:160
         updateUpperView(model: model)
         if state == CellState.expanded { updateBottomView(model: model) }
+        layoutIfNeeded()
     }
     
     private func updateUpperView(model:Flight) {
@@ -64,7 +65,6 @@ class FlightCell: UITableViewCell {
         lblDuration.text = model.durationFlight
         lblPromotionText.isHidden = !model.isPromo
        
-        
         guard let airline = model.airlineFlight ,  let imageURL = URL(string:airline.imagePath) else {
             lblAirlineName.text = "-"
             return
@@ -87,13 +87,35 @@ class FlightCell: UITableViewCell {
     
     private func updateBottomView(model:Flight) {
         
+        lblDurationBottom.text = model.durationFlight
+        lblTicketClass.text = "Bilet sınıfı: "+model.ticketClass
+      
         guard let airline = model.airlineFlight else {
             lblAirlineNameBottom.text = "-"
             lblFlightIdentifier.text = "-"
             return
         }
+        
         lblAirlineNameBottom.text = airline.name
         lblFlightIdentifier.text = airline.code
+        
+        guard let airportOrigin = model.airportOrigin , let airportDestination = model.airportDestination else {
+            lblOrigin.text = "-"
+            lblDestination.text = "-"
+            return
+        }
+        
+        lblOrigin.text = model.timeDeparture+", "+airportOrigin.airportName
+        lblDestination.text = model.timeArrival+", "+airportDestination.airportName
+    
+        guard let attributes = model.flightAttributes else {
+            lblAttributesText.text = ""
+            return
+        }
+        
+        lblAttributesText.text = attributes.stringify()
+        //lblAttributesText.numberOfLines = 0
+        //lblAttributesText.sizeToFit()
     }
     
     
