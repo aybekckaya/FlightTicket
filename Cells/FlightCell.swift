@@ -59,13 +59,30 @@ class FlightCell: UITableViewCell {
     
     private func updateUpperView(model:Flight) {
         
+        lblTimeArrival.text = model.timeArrival
+        lblPrice.text = model.priceString
+        lblDuration.text = model.durationFlight
+        lblPromotionText.isHidden = !model.isPromo
+       
+        
         guard let airline = model.airlineFlight ,  let imageURL = URL(string:airline.imagePath) else {
             lblAirlineName.text = "-"
             return
         }
-        
         lblAirlineName.text = airline.name
         imViewAirlineIcon.kf.setImage(with: imageURL)
+        
+        guard let airportOrigin = model.airportOrigin , let airportDestination = model.airportDestination else {
+            lblAirportOriginDestination.text = "-"
+            return
+        }
+        lblAirportOriginDestination.text = airportOrigin.airportCode+">"+airportDestination.airportCode
+        
+        guard let baggage = model.baggageFlight else {
+            lblBaggageInfo.text = "-"
+            return
+        }
+        lblBaggageInfo.text = String(describing:baggage.allowance)+" "+baggage.unit+"/kişi"
     }
     
     private func updateBottomView(model:Flight) {

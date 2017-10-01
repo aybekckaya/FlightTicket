@@ -32,7 +32,11 @@ struct Flight:Mappable {
     var timeDeparture:String = ""
     
     // gettable properties
-    var priceString:String { get { return "" } }
+    var priceString:String {
+        get {
+             return  String(format: "%.02f", detailPrice)+" TL"
+        }
+    }
     
     
     init?(map: Map) {
@@ -47,6 +51,8 @@ struct Flight:Mappable {
         baggageFlight <- map["infos.baggage_info.firstBaggageCollection.0"]
         detailPrice <- map["detail_price"]
         priceCurrency <- map["price_currency"]
+        timeArrival <- map["segments.0.arrival_datetime.time"]
+        timeDeparture <- map["segments.0.departure_datetime.time"]
         
     }
 }
