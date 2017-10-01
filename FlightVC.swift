@@ -21,7 +21,7 @@ class FlightVC: UIViewController, UITableViewDelegate {
     fileprivate var viewModelFlight = FlightViewModel()
     
     fileprivate var disposeBag = DisposeBag()
-    fileprivate var expandedRow:Int = 11
+    fileprivate var expandedRow:Int = -1
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,14 +35,17 @@ class FlightVC: UIViewController, UITableViewDelegate {
                self.updateCell(cell: cell, row: row, flightModel: element)
             }.disposed(by: disposeBag)
         
+        /*
         tableviewFlights.rx.modelSelected(Flight.self).subscribe(onNext:  { value in
                print("value selected : \(value)")
         }).disposed(by: disposeBag)
+        */
         
         tableviewFlights.rowHeight = UITableViewAutomaticDimension
         tableviewFlights.estimatedRowHeight = 100
         
-        tableviewFlights.rx.setDelegate(self).addDisposableTo(disposeBag)
+        //tableviewFlights.rx.setDelegate(self).addDisposableTo(disposeBag)
+        tableviewFlights.delegate = self
         
         // data initializer
         viewModelFlight.initializeFlightData()
@@ -53,7 +56,14 @@ class FlightVC: UIViewController, UITableViewDelegate {
         return UITableViewAutomaticDimension
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath) as? FlightCell else { return }
+        expandedRow = cell.state == .collapsed ? indexPath.row : -1
+        cell.toggleCellState()
+    }
  
+    
+    
    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

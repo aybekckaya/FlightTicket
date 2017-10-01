@@ -36,7 +36,13 @@ class FlightCell: UITableViewCell {
     
     @IBOutlet weak var btnChoose: UIButton!
     
-    var currentState:CellState = CellState.collapsed
+    fileprivate var currentState:CellState = CellState.collapsed
+    
+    var state:CellState {
+        get {
+            return currentState
+        }
+    }
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -51,7 +57,7 @@ class FlightCell: UITableViewCell {
     
     func updateUI(with model:Flight , state:CellState) {
         currentState = state
-        viewBottom.isHidden = state == CellState.collapsed
+        viewBottom.alpha = state == CellState.collapsed ? 0:1
         heightConstaintBottomView.constant = state == CellState.collapsed ? 0:160
         updateUpperView(model: model)
         if state == CellState.expanded { updateBottomView(model: model) }
@@ -116,6 +122,30 @@ class FlightCell: UITableViewCell {
         lblAttributesText.text = attributes.stringify()
         //lblAttributesText.numberOfLines = 0
         //lblAttributesText.sizeToFit()
+    }
+    
+    func toggleCellState() {
+        currentState == .collapsed ? expandCell() : collapseCell()
+    }
+    
+    private func collapseCell() {
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: UIViewAnimationOptions.allowUserInteraction, animations: {
+            self.heightConstaintBottomView.constant = 0
+            self.viewBottom.alpha = 0
+        }) { finished in
+            self.currentState = .collapsed
+        }
+    }
+    
+    private func expandCell() {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 0.5, options: UIViewAnimationOptions.allowUserInteraction, animations: {
+                self.heightConstaintBottomView.constant = 160
+                self.viewBottom.alpha = 1
+                self.layoutIfNeeded()
+        }) { finished in
+            self.currentState = .expanded
+        }
     }
     
     
