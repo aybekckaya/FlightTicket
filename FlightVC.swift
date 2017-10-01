@@ -7,21 +7,48 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
+import RxDataSources
 
 class FlightVC: UIViewController {
 
+    @IBOutlet weak var tableviewFlights: UITableView!
+    
+    var scene:SceneType = .departureScene
+    
+    fileprivate var viewModelFlight = FlightViewModel()
+    
+    fileprivate var disposeBag = DisposeBag()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        viewModelFlight.typeScene = scene
+        setUpTableview()
+        
     }
+    
+    private func setUpTableview() {
+        viewModelFlight.flights.bind(to: tableviewFlights.rx.items(cellIdentifier: FlightCell.identifier, cellType: FlightCell.self)){ (row,element , cell) in
+                print("element : \(element)")
+                cell.updateUI(with: element)
+            }.disposed(by: disposeBag)
+        
+        tableviewFlights.rx.modelSelected(Flight.self).subscribe(onNext:  { value in
+            print("value selected : \(value)")
+        }).disposed(by: disposeBag)
+        
+        // data initializer
+        viewModelFlight.initializeFlightData()
+    }
+    
 
+   
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-
     /*
     // MARK: - Navigation
 
