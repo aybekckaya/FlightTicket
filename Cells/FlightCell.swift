@@ -8,6 +8,8 @@
 
 import UIKit
 import Kingfisher
+import RxCocoa
+import RxSwift
 
 enum CellState {
     case collapsed
@@ -38,6 +40,8 @@ class FlightCell: UITableViewCell {
     
     fileprivate var currentState:CellState = CellState.collapsed
     
+    fileprivate var disposeBagCell = DisposeBag()
+    
     var state:CellState {
         get {
             return currentState
@@ -62,7 +66,21 @@ class FlightCell: UITableViewCell {
         updateUpperView(model: model)
         if state == CellState.expanded { updateBottomView(model: model) }
         layoutIfNeeded()
+    
+        btnChoose.rx.tap.asDriver().drive(onNext: { _ in
+            RealmProvider().ucurBeniUzaklara(model)
+            guard let vcParent = self.parentViewController else { return }
+            let alertController = UIAlertController(title: "Flight Ticket", message: "Haydi , uçuyoruz... :) ", preferredStyle: .alert)
+            let cancelAct = UIAlertAction(title: "Yuppiiii ...", style: .default, handler: nil)
+            alertController.addAction(cancelAct)
+            vcParent.present(alertController, animated: true, completion: nil)
+        }).addDisposableTo(disposeBagCell)
     }
+    
+    override func prepareForReuse() {
+        disposeBagCell = DisposeBag()
+    }
+    
     
     private func updateUpperView(model:Flight) {
         

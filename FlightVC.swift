@@ -35,16 +35,9 @@ class FlightVC: UIViewController, UITableViewDelegate {
                self.updateCell(cell: cell, row: row, flightModel: element)
             }.disposed(by: disposeBag)
         
-        /*
-        tableviewFlights.rx.modelSelected(Flight.self).subscribe(onNext:  { value in
-               print("value selected : \(value)")
-        }).disposed(by: disposeBag)
-        */
-        
         tableviewFlights.rowHeight = UITableViewAutomaticDimension
         tableviewFlights.estimatedRowHeight = 100
         
-        //tableviewFlights.rx.setDelegate(self).addDisposableTo(disposeBag)
         tableviewFlights.delegate = self
         
         // data initializer

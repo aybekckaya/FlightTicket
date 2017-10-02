@@ -55,6 +55,10 @@ struct Flight:Mappable {
         timeDeparture <- map["segments.0.departure_datetime.time"]
         durationInMinutes <- map["segments.0.duration.total_minutes"]
         flightAttributes <- map["segments.0.segment_attributes"]
+        
+        airlineFlight >>> map[airlineKey]
+        airportOrigin >>> map[airportOriginKey]
+        airportDestination >>> map[airportDestinationKey]
     }
     
     private func minutesToHumanReadableDateString(minutes:Int)->String {

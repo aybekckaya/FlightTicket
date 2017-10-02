@@ -75,7 +75,6 @@ struct FlightViewModel {
             return modelFinal
         }
         
-        print("sample Model : \(modelsFlight[0])")
         flights.onNext(modelsFlight)
     }
     
